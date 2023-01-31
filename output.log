@@ -1,0 +1,9 @@
+[2023-01-31][12:04:36][INFO] Got a connection from 127.0.0.1:56578
+[2023-01-31][12:04:36][INFO] Spawned request entity as "HTTP Request 127.0.0.1:56578"
+[2023-01-31][12:04:36][INFO] (ASYNC) Service adapter spun up.
+[2023-01-31][12:04:36][INFO] Sent off received event.
+[2023-01-31][12:04:36][INFO] Got received event, replying hello world.
+[2023-01-31][12:04:36][INFO] Got a reply, trying to send it!
+[2023-01-31][12:04:36][INFO] (ASYNC) Task pool sending reply.
+[2023-01-31][12:04:36][INFO] (ASYNC) Service adapter done (outside serve).
+[2023-01-31][12:04:36][INFO] Finalizing "HTTP Request 127.0.0.1:56578"

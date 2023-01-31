@@ -1,0 +1,15 @@
+[package]
+name = "bevyblog"
+version = "0.1.0"
+edition = "2021"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+bevy = { version = "^0.9", features = ["bevy_asset", "filesystem_watcher"], default-features = false }
+chrono = "0.4.23"
+fern = "0.6.1"
+http = "0.2.8"
+hyper = { version = "^0.14", features = ["full"] }
+log = "0.4.17"
+tokio = { version = "1.25.0", default-features = false, features = ["net"] }
