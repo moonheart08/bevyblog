@@ -62,7 +62,7 @@ pub fn check_path_matches(check: &Path, pattern: &Path) -> bool {
             if pattern == OsStr::new("*") {
                 return true; // Glob, so we match everything from here on.
             }
-            debug!("Comparing `{segment:?}` and `{pattern:?}`");
+            
             if segment != pattern {
                 return false;
             }

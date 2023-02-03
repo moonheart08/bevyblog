@@ -1,0 +1,29 @@
+// Colors! Blatantly stolen from/inspired by The Best Motherfucking Website @ https://github.com/denysvitali/thebestmotherfuckingwebsite/
+// I'm a low level dev who barely knows CSS I think it's better I just yoink some of theirs.
+// TODO: Automatic dark mode, maybe I should just copypaste the entire thing.
+@bodybgColor: #121212;
+@bodyTextColor: #fefefe;
+
+// Link Colors
+@linkColor: #07A;
+@linkVisitedColor: #941352;
+@linkVisitedInvertedColor: #ac5a82;
+
+body {
+    font-family: "Open Sans", Arial;
+    background-color: @bodybgColor;
+    color: @bodyTextColor;
+    font-size: 16px;
+    margin: 2em auto;
+    max-width: 800px;
+    padding: 1em;
+    line-height: 1.4;
+    text-align: justify;
+}
+a {
+    color: @linkColor;
+    &:visited{
+        color: @linkVisitedColor;
+    }
+}
+  
