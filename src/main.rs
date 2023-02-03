@@ -1,6 +1,6 @@
 use bevy::{
     app::{ScheduleRunnerPlugin, ScheduleRunnerSettings},
-    prelude::*,
+    prelude::*, ecs::bundle,
 };
 use log::info;
 use std::{error::Error, time::Duration, path::PathBuf};
@@ -32,13 +32,23 @@ fn main() -> Result<(), Box<dyn Error>> {
     info!("Starting bevy application.");
     let mut app = App::new();
     app.add_plugin(CorePlugin::default())
+        .add_plugin(AssetPlugin {
+            // Tell the asset server to watch for asset changes on disk:
+            watch_for_changes: true,
+            ..default()
+        })
         .insert_resource(ScheduleRunnerSettings::run_loop(Duration::from_nanos(0)))
         .add_plugin(ScheduleRunnerPlugin::default())
         .add_plugin(http::HttpRequestPlugin::default())
         .add_plugin(page::HttpPageHandlerPlugin::default());
-    app.world.spawn(HttpFileServeBundle::new(&PathBuf::from("assets/index.html"), PathBuf::from("/"))?);
-    app.world.spawn(HttpFileServeBundle::new(&PathBuf::from("assets/index.html"), PathBuf::from("/index.html"))?);
-    app.world.spawn(HttpFileServeBundle::new(&PathBuf::from("assets/main.less"), PathBuf::from("/main.less"))?);
+    let world = &mut app.world;
+    let assets = world.get_resource::<AssetServer>().unwrap();
+    let bundlea = HttpFileServeBundle::new(&PathBuf::from("index.html"), PathBuf::from("/"), &assets)?;
+    let bundleb = HttpFileServeBundle::new(&PathBuf::from("index.html"), PathBuf::from("/index.html"), &assets)?;
+    let bundlec = HttpFileServeBundle::new(&PathBuf::from("main.less"), PathBuf::from("/main.less"), &assets)?;
+    world.spawn(bundlea);
+    world.spawn(bundleb);
+    world.spawn(bundlec);
     app.run();
     Ok(())
 }

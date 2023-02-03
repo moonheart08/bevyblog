@@ -11,12 +11,14 @@ use hyper::Body;
 
 use super::request::HttpRequestComponent;
 
+/// Event that, when raised, contains information about an incoming HTTP request, namely it's body and attached entity.
 #[derive(Debug)]
 pub struct HttpRequestReceivedEvent {
     pub body: Arc<Request<Body>>,
     pub ent: Entity,
 }
 
+/// Event that, when raised, will be handled to reply to the specified HTTP request.
 #[derive(Debug)]
 pub struct HttpRequestReplyEvent {
     body: Mutex<Result<Response<Body>, Box<dyn Error + Send + Sync>>>,
@@ -24,7 +26,8 @@ pub struct HttpRequestReplyEvent {
 }
 
 impl HttpRequestReplyEvent {
-    pub fn new(result: Result<Response<Body>, Box<dyn Error + Send + Sync>>, request: Entity) -> Self{
+    /// Constructs a new HttpRequestReplyEvent, given a response and the request to reply to.
+    pub fn new(result: Result<Response<Body>, Box<dyn Error + Send + Sync>>, request: Entity) -> Self {
         HttpRequestReplyEvent {
             body: Mutex::new(result),
             ent: request,
@@ -76,21 +79,10 @@ pub(in crate::http) fn http_finalizer(req_comp: Query<(Entity, &HttpRequestCompo
     }
 }
 
-pub(in crate::http) fn http_hello_world_system(
-    mut recv_ev_reader: EventReader<HttpRequestReceivedEvent>,
-    mut reply_ev_writer: EventWriter<HttpRequestReplyEvent>,
-) {
-    for ev in recv_ev_reader.iter() {
-        info!("Got received event, replying hello world.");
-        reply_ev_writer.send(HttpRequestReplyEvent {
-            body: Mutex::new(Ok(Response::new(Body::from("Hello, World!")))),
-            ent: ev.ent,
-        })
-    }
-}
-
+/// A fallback error that is used should a bug occur in reply handling that causes us to attempt to reply with bad data.
 #[derive(Debug)]
 pub struct TakenError();
+
 impl Display for TakenError {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         f.write_str("[taken data]")

@@ -1,19 +1,20 @@
-use std::{io::{BufReader, Read}, fs::File, path::{Path, PathBuf}};
-use bevy::prelude::*;
+use std::{io::Read, fs::File, path::{Path, PathBuf}};
+use bevy::{prelude::*, asset::Asset};
 use http::{Response, Method};
 use hyper::Body;
 
 use crate::http::events::HttpRequestReplyEvent;
 
-use super::{pathspec::{HttpHandlerBundle, HttpHandlerRequestMailbox}, error_replies::reply_request_400};
+use super::{pathspec::{HttpHandlerBundle, HttpHandlerRequestMailbox}, error_replies::{reply_request_400, reply_request_503}, assets::WebFileAsset};
 
+/// A very simple server that replies to GET requests with pre-loaded data.
 #[derive(Component)]
-pub struct HttpStringServeComponent {
-    data: String,
+pub struct HttpAssetServeComponent {
+    data: Handle<WebFileAsset>,
 }
 
-impl HttpStringServeComponent {
-    pub fn new(data: String) -> Self {
+impl HttpAssetServeComponent {
+    pub fn new(data: Handle<WebFileAsset>) -> Self {
         Self {
             data
         }
@@ -24,26 +25,25 @@ impl HttpStringServeComponent {
 pub struct HttpFileServeBundle {
     #[bundle]
     handler: HttpHandlerBundle,
-    server: HttpStringServeComponent,
+    server: HttpAssetServeComponent,
 }
 
 impl HttpFileServeBundle {
-    pub fn new(filePath: &Path, servePath: PathBuf) -> Result<Self, std::io::Error> {
-        let mut file = File::open(filePath)?;
-        let mut contents = String::new();
-        file.read_to_string(&mut contents)?;
+    pub fn new(filePath: &Path, servePath: PathBuf, asset_server: &AssetServer) -> Result<Self, std::io::Error> {
+        
 
         Ok(Self {
             handler: HttpHandlerBundle::new(servePath),
-            server: HttpStringServeComponent::new(contents)
+            server: HttpAssetServeComponent::new(asset_server.load(filePath))
         })
     }
 }
 
 pub(in super) fn http_string_serve_system(
     //TODO: Bevy gets very upset if I make this filter by changed mailbox, though I do see why.
-    mut waiting_requests: Query<(&HttpStringServeComponent, &mut HttpHandlerRequestMailbox)>,
+    mut waiting_requests: Query<(&HttpAssetServeComponent, &mut HttpHandlerRequestMailbox)>,
     mut reply_events: EventWriter<HttpRequestReplyEvent>,
+    assets: Res<Assets<WebFileAsset>>,
 ) {
     for (serve, mut mailbox) in waiting_requests.iter_mut() {
         while let Some((request, body)) = mailbox.read_message() {
@@ -52,8 +52,12 @@ pub(in super) fn http_string_serve_system(
                 continue;
             }
 
-            let response = Response::new(Body::from(serve.data.clone()));
-            reply_events.send(HttpRequestReplyEvent::new(Ok(response), request));
+            if let Some(v) = assets.get(&serve.data) {
+                let response = Response::new(Body::from(v.data.clone()));
+                reply_events.send(HttpRequestReplyEvent::new(Ok(response), request));
+            } else {
+                reply_request_503(&mut reply_events, request);
+            }
         }
     }
 }

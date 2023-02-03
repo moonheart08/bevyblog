@@ -9,11 +9,13 @@ use crate::http::events::{HttpRequestReceivedEvent, HttpRequestReplyEvent};
 
 use super::error_replies::reply_request_404;
 
+/// A path specifier for the entity, which when combined with a mailbox allows standard pathed requests to be routed to it.
 #[derive(Component)]
 pub struct HttpHandlerPathSpec {
     path: PathBuf,
 }
 
+/// A mailbox for requests, indicating where they're from and their body. Use with a path specifier.
 #[derive(Component)]
 pub struct HttpHandlerRequestMailbox {
     mailbox: Vec<(Entity, Arc<Request<Body>>)>,
@@ -35,6 +37,7 @@ impl HttpHandlerRequestMailbox {
     }
 }
 
+/// A handler bundle, this is what you should be using to allow your handler to service requests. Contains a pathspec and mailbox.
 #[derive(Bundle)]
 pub struct HttpHandlerBundle {
     spec: HttpHandlerPathSpec,
@@ -42,6 +45,7 @@ pub struct HttpHandlerBundle {
 }
 
 impl HttpHandlerBundle {
+    /// Constructs a new handler bundle given the provided path.
     pub fn new(path: PathBuf) -> Self {
         HttpHandlerBundle {
             spec: HttpHandlerPathSpec { path },
@@ -50,6 +54,10 @@ impl HttpHandlerBundle {
     }
 }
 
+/// Checks if the given input path matches the pattern, with /simple/ glob handling
+/// # Gotchas
+/// This currently only supports trivial globs, i.e. `*` at the end of the path with no additional characters.
+/// Support for more complex pattern matching is TODO, alongside accelerating matches with an internal structure for the handler.
 pub fn check_path_matches(check: &Path, pattern: &Path) -> bool {
     if check.iter().count() < pattern.iter().count() {
         return false;
@@ -62,7 +70,7 @@ pub fn check_path_matches(check: &Path, pattern: &Path) -> bool {
             if pattern == OsStr::new("*") {
                 return true; // Glob, so we match everything from here on.
             }
-            
+
             if segment != pattern {
                 return false;
             }
