@@ -62,9 +62,12 @@ pub fn check_path_matches(check: &Path, pattern: &Path) -> bool {
             if pattern == OsStr::new("*") {
                 return true; // Glob, so we match everything from here on.
             }
+            debug!("Comparing `{segment:?}` and `{pattern:?}`");
             if segment != pattern {
                 return false;
             }
+        } else {
+            return false;
         }
     }
 
@@ -87,7 +90,8 @@ pub(in super) fn http_request_sorter_system(
         searcher.path_set.insert(entity, spec.path.clone());
     }
 
-    'l: for ev in events.iter() {
+    'outer: 
+    for ev in events.iter() {
         let path = PathBuf::from(ev.body.uri().path());
         for (k, pattern) in searcher.path_set.iter() {
             if !check_path_matches(&path, pattern) {
@@ -96,9 +100,10 @@ pub(in super) fn http_request_sorter_system(
 
             if let Ok((_, mut mailbox)) = path_mailboxes.get_mut(k.to_owned()) {
                 mailbox.push_message(ev.ent, ev.body.clone());
-                continue 'l;
+                continue 'outer; // Move to the next event, don't fall through!
             }
         }
+
         warn!("Failed to find any handler for {path:?}. 404ing.");
         reply_request_404(&mut reply_events, ev.ent);
     }

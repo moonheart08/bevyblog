@@ -51,6 +51,7 @@ pub(in super) fn http_string_serve_system(
                 reply_request_400(&mut reply_events, request);
                 continue;
             }
+
             let response = Response::new(Body::from(serve.data.clone()));
             reply_events.send(HttpRequestReplyEvent::new(Ok(response), request));
         }
