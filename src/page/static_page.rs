@@ -1,5 +1,5 @@
-use std::{io::Read, fs::File, path::{Path, PathBuf}};
-use bevy::{prelude::*, asset::Asset};
+use std::{path::{Path, PathBuf}};
+use bevy::prelude::*;
 use http::{Response, Method};
 use hyper::Body;
 
@@ -29,12 +29,10 @@ pub struct HttpFileServeBundle {
 }
 
 impl HttpFileServeBundle {
-    pub fn new(filePath: &Path, servePath: PathBuf, asset_server: &AssetServer) -> Result<Self, std::io::Error> {
-        
-
+    pub fn new(file_path: &Path, serve_path: PathBuf, asset_server: &AssetServer) -> Result<Self, std::io::Error> {
         Ok(Self {
-            handler: HttpHandlerBundle::new(servePath),
-            server: HttpAssetServeComponent::new(asset_server.load(filePath))
+            handler: HttpHandlerBundle::new(serve_path),
+            server: HttpAssetServeComponent::new(asset_server.load(file_path))
         })
     }
 }
@@ -48,7 +46,7 @@ pub(in super) fn http_string_serve_system(
     for (serve, mut mailbox) in waiting_requests.iter_mut() {
         while let Some((request, body)) = mailbox.read_message() {
             if body.method() != Method::GET {
-                reply_request_400(&mut reply_events, request);
+                reply_request_400(&mut reply_events, body, request);
                 continue;
             }
 
@@ -56,7 +54,7 @@ pub(in super) fn http_string_serve_system(
                 let response = Response::new(Body::from(v.data.clone()));
                 reply_events.send(HttpRequestReplyEvent::new(Ok(response), request));
             } else {
-                reply_request_503(&mut reply_events, request);
+                reply_request_503(&mut reply_events, body, request);
             }
         }
     }

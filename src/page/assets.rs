@@ -1,5 +1,4 @@
 use bevy::asset::{AssetLoader, LoadedAsset};
-use bevy::prelude::*;
 use bevy::reflect::{TypeUuid};
 
 #[derive(Debug, TypeUuid)]

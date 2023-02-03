@@ -3,7 +3,6 @@ use std::{path::{PathBuf, Path}, sync::Arc, ffi::OsStr, collections::HashMap};
 use bevy::prelude::*;
 use http::{Request};
 use hyper::Body;
-use log::{debug, error, info, trace, warn};
 
 use crate::http::events::{HttpRequestReceivedEvent, HttpRequestReplyEvent};
 
@@ -112,7 +111,6 @@ pub(in super) fn http_request_sorter_system(
             }
         }
 
-        warn!("Failed to find any handler for {path:?}. 404ing.");
-        reply_request_404(&mut reply_events, ev.ent);
+        reply_request_404(&mut reply_events, ev.body.clone(), ev.ent);
     }
 }
