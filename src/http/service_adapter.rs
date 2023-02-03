@@ -1,6 +1,6 @@
 use http::{Request, Response};
 use hyper::{body::Body, service::Service};
-use log::{debug, error, info, trace, warn};
+use log::info;
 use std::fmt::Display;
 use std::sync::mpsc;
 use std::{
@@ -9,13 +9,13 @@ use std::{
     task::{self, Poll},
 };
 
-pub struct HttpServicer {
+pub struct HttpSingleServicer {
     out: Option<mpsc::SyncSender<Request<Body>>>,
     inp: Option<mpsc::Receiver<Result<Response<Body>, Box<dyn Error + Send + Sync>>>>,
     done: bool,
 }
 
-impl HttpServicer {
+impl HttpSingleServicer {
     pub fn new(
         out: mpsc::SyncSender<Request<Body>>,
         inp: mpsc::Receiver<Result<Response<Body>, Box<dyn Error + Send + Sync>>>,
@@ -29,17 +29,17 @@ impl HttpServicer {
     }
 }
 
-pub struct HttpServicerFuture<E, R> {
+pub struct HttpSingleServicerFuture<E, R> {
     inp: mpsc::Receiver<Result<R, E>>,
 }
 
-impl<E, R> HttpServicerFuture<E, R> {
+impl<E, R> HttpSingleServicerFuture<E, R> {
     pub fn new(inp: mpsc::Receiver<Result<R, E>>) -> Self {
-        HttpServicerFuture { inp }
+        HttpSingleServicerFuture { inp }
     }
 }
 
-impl<E, R> Future for HttpServicerFuture<E, R> {
+impl<E, R> Future for HttpSingleServicerFuture<E, R> {
     type Output = Result<R, E>;
 
     fn poll(self: std::pin::Pin<&mut Self>, cx: &mut task::Context<'_>) -> Poll<Self::Output> {
@@ -54,12 +54,12 @@ impl<E, R> Future for HttpServicerFuture<E, R> {
     }
 }
 
-impl Service<Request<Body>> for HttpServicer {
+impl Service<Request<Body>> for HttpSingleServicer {
     type Response = Response<Body>;
 
     type Error = Box<dyn Error + Send + Sync>;
 
-    type Future = HttpServicerFuture<Self::Error, Self::Response>;
+    type Future = HttpSingleServicerFuture<Self::Error, Self::Response>;
 
     fn poll_ready(&mut self, cx: &mut task::Context<'_>) -> Poll<Result<(), Self::Error>> {
         if self.done {

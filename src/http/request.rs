@@ -4,11 +4,11 @@ use bevy::{
 };
 use http::{Request, Response};
 use hyper::{server::conn::Http, Body};
-use log::{debug, error, info, trace, warn};
+use log::{error, info};
 use std::{error::Error, net::TcpListener, sync::Mutex};
 use std::{io::ErrorKind, sync::mpsc};
 
-use crate::{custtcpstream, http::service_adapter::HttpServicer};
+use crate::{custtcpstream, http::service_adapter::HttpSingleServicer};
 
 #[derive(Component)]
 pub(in crate::http) struct HttpRequestComponent {
@@ -43,7 +43,8 @@ pub(in crate::http) fn http_request_listener_system(mut ctx: ResMut<HttpRequestC
 
     let listener = ctx.listener.as_ref().unwrap();
 
-    while let stream = listener.accept() {
+    loop {
+        let stream = listener.accept();
         match stream {
             Ok((s, addr)) => {
                 info!("Got a connection from {}", addr);
@@ -54,7 +55,7 @@ pub(in crate::http) fn http_request_listener_system(mut ctx: ResMut<HttpRequestC
 
                 let task = pool.spawn(async move {
                     let stream = custtcpstream::CustTcpStream::new(s);
-                    let servicer = HttpServicer::new(txreq, rxres);
+                    let servicer = HttpSingleServicer::new(txreq, rxres);
 
                     if let Err(http_err) = Http::new()
                         .http1_only(true)

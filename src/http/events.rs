@@ -13,14 +13,23 @@ use super::request::HttpRequestComponent;
 
 #[derive(Debug)]
 pub struct HttpRequestReceivedEvent {
-    body: Arc<Request<Body>>,
-    ent: Entity,
+    pub body: Arc<Request<Body>>,
+    pub ent: Entity,
 }
 
 #[derive(Debug)]
 pub struct HttpRequestReplyEvent {
     body: Mutex<Result<Response<Body>, Box<dyn Error + Send + Sync>>>,
     ent: Entity,
+}
+
+impl HttpRequestReplyEvent {
+    pub fn new(result: Result<Response<Body>, Box<dyn Error + Send + Sync>>, request: Entity) -> Self{
+        HttpRequestReplyEvent {
+            body: Mutex::new(result),
+            ent: request,
+        }
+    }
 }
 
 pub(in crate::http) fn http_request_events_system(

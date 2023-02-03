@@ -4,6 +4,7 @@
 		{
 			"type": "cargo",
 			"command": "run",
+			"env": {"RUST_BACKTRACE": "1"},
 			"problemMatcher": [
 				"$rustc"
 			],
@@ -13,6 +14,7 @@
 		{
 			"type": "cargo",
 			"command": "check",
+			"env": {"RUST_BACKTRACE": "1"},
 			"problemMatcher": [
 				"$rustc"
 			],

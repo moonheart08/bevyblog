@@ -1,5 +1,4 @@
 use bevy::prelude::*;
-use log::{debug, error, info, trace, warn};
 pub mod events;
 mod request;
 mod service_adapter;
@@ -26,13 +25,8 @@ impl Plugin for HttpRequestPlugin {
             )
             .add_system_to_stage(HttpRequestStages::Listener, http_request_listener_system)
             .add_system_to_stage(HttpRequestStages::EventDistro, http_request_events_system)
-            .add_system(http_hello_world_system)
             .add_system_to_stage(CoreStage::PostUpdate, http_finalizer);
     }
-}
-
-fn fuck() {
-    info!("E");
 }
 
 #[derive(Debug, Hash, PartialEq, Eq, Clone, StageLabel)]

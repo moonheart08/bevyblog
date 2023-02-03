@@ -1,9 +1,25 @@
-[2023-01-31][12:04:36][INFO] Got a connection from 127.0.0.1:56578
-[2023-01-31][12:04:36][INFO] Spawned request entity as "HTTP Request 127.0.0.1:56578"
-[2023-01-31][12:04:36][INFO] (ASYNC) Service adapter spun up.
-[2023-01-31][12:04:36][INFO] Sent off received event.
-[2023-01-31][12:04:36][INFO] Got received event, replying hello world.
-[2023-01-31][12:04:36][INFO] Got a reply, trying to send it!
-[2023-01-31][12:04:36][INFO] (ASYNC) Task pool sending reply.
-[2023-01-31][12:04:36][INFO] (ASYNC) Service adapter done (outside serve).
-[2023-01-31][12:04:36][INFO] Finalizing "HTTP Request 127.0.0.1:56578"
+[2023-02-02][19:13:48][INFO] Starting bevy application.
+[2023-02-02][19:14:48][INFO] Starting bevy application.
+[2023-02-02][19:16:02][INFO] Starting bevy application.
+[2023-02-02][19:16:55][INFO] Starting bevy application.
+[2023-02-02][19:18:56][INFO] Starting bevy application.
+[2023-02-02][19:21:02][INFO] Starting bevy application.
+[2023-02-02][19:21:11][INFO] Got a connection from 127.0.0.1:52421
+[2023-02-02][19:21:11][INFO] Spawned request entity as "HTTP Request 127.0.0.1:52421"
+[2023-02-02][19:21:11][INFO] (ASYNC) Service adapter spun up.
+[2023-02-02][19:21:11][INFO] Sent off received event.
+[2023-02-02][19:21:11][WARN] Failed to find any handler for "/". 404ing.
+[2023-02-02][19:21:11][INFO] Got a reply, trying to send it!
+[2023-02-02][19:21:11][INFO] Got a reply, trying to send it!
+[2023-02-02][19:21:11][INFO] (ASYNC) Task pool sending reply.
+[2023-02-02][19:21:11][INFO] (ASYNC) Service adapter done (outside serve).
+[2023-02-02][19:21:11][INFO] Finalizing "HTTP Request 127.0.0.1:52421"
+[2023-02-02][19:21:45][INFO] Starting bevy application.
+[2023-02-02][19:21:47][INFO] Got a connection from 127.0.0.1:52426
+[2023-02-02][19:21:47][INFO] Spawned request entity as "HTTP Request 127.0.0.1:52426"
+[2023-02-02][19:21:47][INFO] (ASYNC) Service adapter spun up.
+[2023-02-02][19:21:47][INFO] Sent off received event.
+[2023-02-02][19:21:47][INFO] Got a reply, trying to send it!
+[2023-02-02][19:21:47][INFO] (ASYNC) Task pool sending reply.
+[2023-02-02][19:21:47][INFO] (ASYNC) Service adapter done (outside serve).
+[2023-02-02][19:21:47][INFO] Finalizing "HTTP Request 127.0.0.1:52426"
