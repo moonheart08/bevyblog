@@ -22,15 +22,17 @@ impl HttpAssetServeComponent {
 }
 
 #[derive(Bundle)]
-pub struct HttpFileServeBundle {
+pub struct HttpAssetServeBundle {
     #[bundle]
     handler: HttpHandlerBundle,
     server: HttpAssetServeComponent,
+    name: Name,
 }
 
-impl HttpFileServeBundle {
+impl HttpAssetServeBundle {
     pub fn new(file_path: &Path, serve_path: PathBuf, asset_server: &AssetServer) -> Result<Self, std::io::Error> {
         Ok(Self {
+            name: Name::new(format!("Asset Server `{serve_path:?}`")),
             handler: HttpHandlerBundle::new(serve_path),
             server: HttpAssetServeComponent::new(asset_server.load(file_path))
         })

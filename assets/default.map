@@ -1,0 +1,7 @@
+SiteMapAsset(
+    mapping: [
+        ("/", "index.html"),
+        ("/index.html", "index.html"),
+        ("/main.less", "main.less"),
+    ],
+)

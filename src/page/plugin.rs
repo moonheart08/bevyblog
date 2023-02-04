@@ -1,6 +1,6 @@
 use bevy::prelude::*;
 
-use super::{pathspec::{PathSpecSearcherResource, http_request_sorter_system}, static_page::http_string_serve_system, assets::{WebFileAsset, WebFileLoader, SiteMapAsset}};
+use super::{pathspec::{PathSpecSearcherResource, http_request_sorter_system}, static_page::http_string_serve_system, assets::{WebFileAsset, WebFileLoader, SiteMapAsset, SiteMapLoader}, sitemap::site_map_reloader};
 
 /// Provides HTTP page handling, automatically routing requests to any entities with the correct pathspec and mailbox.
 /// To receive routed requests, utilize the HttpHandlerBundle and read new requests from your HttpHandlerRequestMailbox component.
@@ -13,8 +13,10 @@ impl Plugin for HttpPageHandlerPlugin {
             .insert_resource(PathSpecSearcherResource::default())
             .add_system(http_request_sorter_system)
             .add_system(http_string_serve_system)
+            .add_system(site_map_reloader)
             .add_asset::<WebFileAsset>()
             .add_asset::<SiteMapAsset>()
-            .add_asset_loader(WebFileLoader());
+            .add_asset_loader(WebFileLoader())
+            .add_asset_loader(SiteMapLoader());
     }
 }

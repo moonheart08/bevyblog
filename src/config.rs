@@ -3,7 +3,7 @@ use std::path::PathBuf;
 use bevy::prelude::Resource;
 use serde::Deserialize;
 
-#[derive(Debug, Deserialize, Resource)]
+#[derive(Debug, Deserialize, Resource, Clone)]
 pub struct ServiceConfig {
     /// The site map assets to load for this site.
     pub sitemaps: Vec<PathBuf>,
