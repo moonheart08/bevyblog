@@ -1,3 +1,5 @@
+use std::path::PathBuf;
+
 use bevy::asset::{AssetLoader, LoadedAsset};
 use bevy::reflect::{TypeUuid};
 
@@ -5,6 +7,12 @@ use bevy::reflect::{TypeUuid};
 #[uuid="5dadb1ea-82d0-40da-b864-596f8b2b40b7"]
 pub struct WebFileAsset {
     pub data: String,
+}
+
+#[derive(Debug, TypeUuid)]
+#[uuid="c5c61281-cddb-47eb-9e76-d1c73a75105f"]
+pub struct WebPathMappingAsset {
+    pub mapping: Vec<(PathBuf, PathBuf)>
 }
 
 pub(in super) struct WebFileLoader();

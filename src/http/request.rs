@@ -30,7 +30,7 @@ pub(in crate::http) struct HttpRequestContext {
 
 pub(in crate::http) fn http_request_listener_system(mut ctx: ResMut<HttpRequestContext>, mut commands: Commands) {
     if let None = ctx.listener {
-        match TcpListener::bind("127.0.0.1:8080") {
+        match TcpListener::bind("0.0.0.0:8080") {
             Ok(l) => ctx.listener = Some(l),
             Err(e) => {
                 error!("Ran into {e} while trying to set up the listener.");

@@ -571,6 +571,7 @@ dependencies = [
  "http",
  "hyper",
  "log",
+ "serde",
  "tokio",
 ]
 
