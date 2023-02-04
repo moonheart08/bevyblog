@@ -1,6 +1,6 @@
 use bevy::{
     prelude::*,
-    tasks::{IoTaskPool, Task}, app::AppExit,
+    tasks::{IoTaskPool, Task, ComputeTaskPool}, app::AppExit,
 };
 use http::{Request, Response};
 use hyper::{server::conn::Http, Body};
@@ -41,7 +41,7 @@ pub(in crate::http) fn http_request_listener_system(mut ctx: ResMut<HttpRequestC
 
         ctx.listener.as_ref().unwrap().set_nonblocking(true).expect("Nonblocking unavailable, can't continue!");
     }
-    let pool = IoTaskPool::get();
+    let pool = ComputeTaskPool::get();
 
     let listener = ctx.listener.as_ref().unwrap();
 
@@ -60,8 +60,8 @@ pub(in crate::http) fn http_request_listener_system(mut ctx: ResMut<HttpRequestC
                     let servicer = HttpSingleServicer::new(txreq, rxres);
 
                     if let Err(http_err) = Http::new()
-                        .http1_only(true)
                         .http1_keep_alive(false)
+                        .http2_keep_alive_interval(None)
                         .serve_connection(stream, servicer)
                         .await
                     {
