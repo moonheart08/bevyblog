@@ -31,6 +31,8 @@ pub struct HttpAssetServeBundle {
 
 impl HttpAssetServeBundle {
     pub fn new(file_path: &Path, serve_path: PathBuf, asset_server: &AssetServer) -> Result<Self, std::io::Error> {
+        trace!("Building a new asset server, mapping {file_path:?} to URI {serve_path:?}");
+
         Ok(Self {
             name: Name::new(format!("Asset Server `{serve_path:?}`")),
             handler: HttpHandlerBundle::new(serve_path),

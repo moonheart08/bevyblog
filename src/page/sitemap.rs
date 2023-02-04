@@ -70,7 +70,7 @@ pub fn setup_sitemap(handle: Handle<SiteMapAsset>, controllers: &Query<(Entity, 
     
     let map = assets.get(&handle);
     if let Some(map_real) = map {
-        info!("Loading a new site map, this will change the following pages: {:?}", map_real.mapping);
+        info!("Loading a new site map, this will map the following pages: {:?}", map_real.mapping);
     } else {
         info!("Doing prelim loading of site map. Load state: {:?}", asset_server.get_load_state(handle));
         

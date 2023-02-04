@@ -26,7 +26,7 @@ fn main() -> Result<(), Box<dyn Error>> {
         .add_plugin(CorePlugin::default())
         .add_plugin(LogPlugin {
             level: Level::DEBUG,
-            filter: "".to_string(),
+            filter: "bevyblog=trace".to_string(),
         })
         .add_plugin(AssetPlugin {
             // Tell the asset server to watch for asset changes on disk:
@@ -38,11 +38,8 @@ fn main() -> Result<(), Box<dyn Error>> {
         .add_plugin(ScheduleRunnerPlugin::default())
         .add_plugin(http::HttpRequestPlugin::default())
         .add_plugin(page::HttpPageHandlerPlugin::default());
+    
     let world = &mut app.world;
-    let assets = world.get_resource::<AssetServer>().unwrap();
-    for i in &config.sitemaps {
-        let _ = assets.load::<SiteMapAsset, &Path>(i);
-    }
     app.run();
     Ok(())
 }
