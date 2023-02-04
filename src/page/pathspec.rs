@@ -14,6 +14,16 @@ pub struct HttpHandlerPathSpec {
     path: PathBuf,
 }
 
+impl HttpHandlerPathSpec {
+    pub fn extension<'a>(&'a self) -> Option<&'a str> {
+        self.path.extension().and_then(|v| v.to_str())
+    }
+
+    pub fn path<'a>(&'a self) -> &'a Path {
+        &self.path
+    }
+}
+
 /// A mailbox for requests, indicating where they're from and their body. Use with a path specifier.
 #[derive(Component)]
 pub struct HttpHandlerRequestMailbox {

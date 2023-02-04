@@ -26,7 +26,7 @@ fn main() -> Result<(), Box<dyn Error>> {
         .add_plugin(CorePlugin::default())
         .add_plugin(LogPlugin {
             level: Level::DEBUG,
-            filter: "bevyblog=trace".to_string(),
+            filter: "bevyblog=trace,hyper=info".to_string(),
         })
         .add_plugin(AssetPlugin {
             // Tell the asset server to watch for asset changes on disk:

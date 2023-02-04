@@ -30,3 +30,11 @@ pub fn reply_request_503(events: &mut EventWriter<HttpRequestReplyEvent>, reques
     let _ = std::mem::replace(response.status_mut(), StatusCode::SERVICE_UNAVAILABLE); // why do i have to do it this way.
     events.send(HttpRequestReplyEvent::new(Ok(response), request))
 }
+
+/// Automatically reply to the given request with the 500 (Internal Server Error) page.
+pub fn reply_request_500(events: &mut EventWriter<HttpRequestReplyEvent>, request_data: Arc<Request<Body>>, request: Entity) {
+    warn!("Replying 500 to request for \"{:?}\".", request_data.uri());
+    let mut response = Response::new(Body::from("500 Internal Server Error."));
+    let _ = std::mem::replace(response.status_mut(), StatusCode::SERVICE_UNAVAILABLE); // why do i have to do it this way.
+    events.send(HttpRequestReplyEvent::new(Ok(response), request))
+}

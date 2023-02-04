@@ -31,7 +31,7 @@ impl AssetLoader for WebFileLoader {
     }
 
     fn extensions(&self) -> &[&str] {
-        &["html", "less", "css", "js"]
+        &["html", "less", "css", "js", "png", "ico"]
     }
 }
 

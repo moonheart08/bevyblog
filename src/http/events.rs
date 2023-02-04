@@ -44,11 +44,13 @@ pub(in crate::http) fn http_request_events_system(
         let l = comp.rxreq.lock().unwrap();
 
         if let Ok(body) = l.try_recv() {
+            let uri = body.uri();
+            info!("Sent off received event for {ent:?} at URI \"{uri:?}\".");
             recv_ev_writer.send(HttpRequestReceivedEvent {
                 body: Arc::new(body),
                 ent,
             });
-            info!("Sent off received event.");
+
         }
     }
 

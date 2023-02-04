@@ -3,5 +3,8 @@ SiteMapAsset(
         ("/", "index.html"),
         ("/index.html", "index.html"),
         ("/main.less", "main.less"),
+        ("/image/favicon.png", "favicon.png"),
+        ("/favicon.ico", "favicon.ico"),
+        ("/image/favicon.ico", "favicon.ico"),
     ],
 )
