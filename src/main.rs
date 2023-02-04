@@ -3,10 +3,11 @@ use bevy::{
     prelude::*,
 };
 use log::info;
-use std::{error::Error, time::Duration, path::PathBuf};
+use std::{error::Error, time::Duration, path::PathBuf, fs::File, io::Read};
 
-use crate::page::static_page::HttpFileServeBundle;
+use crate::{page::static_page::HttpFileServeBundle, config::ServiceConfig};
 mod custtcpstream;
+mod config;
 mod http;
 mod page;
 
@@ -30,6 +31,14 @@ fn setup_logger() -> Result<(), fern::InitError> {
 fn main() -> Result<(), Box<dyn Error>> {
     setup_logger()?;
     info!("Starting bevy application.");
+    
+    let config = {
+        let mut data: String = String::new();
+        let mut cfg_file = File::open("cfg.ron")?;
+        cfg_file.read_to_string(&mut data)?;
+        ron::from_str::<ServiceConfig>(&data)?
+    };
+
     let mut app = App::new();
     app.add_plugin(CorePlugin::default())
         .add_plugin(AssetPlugin {
@@ -37,6 +46,7 @@ fn main() -> Result<(), Box<dyn Error>> {
             watch_for_changes: true,
             ..default()
         })
+        .insert_resource(config)
         .insert_resource(ScheduleRunnerSettings::run_loop(Duration::from_micros(((1000.0/120.0) * 1000.0) as u64))) // I think only responding in 8ms periods is fine. This brings the CPU use from 100% to 0.1%. I'm not kidding.
         .add_plugin(ScheduleRunnerPlugin::default())
         .add_plugin(http::HttpRequestPlugin::default())

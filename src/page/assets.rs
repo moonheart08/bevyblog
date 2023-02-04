@@ -11,7 +11,7 @@ pub struct WebFileAsset {
 
 #[derive(Debug, TypeUuid)]
 #[uuid="c5c61281-cddb-47eb-9e76-d1c73a75105f"]
-pub struct WebPathMappingAsset {
+pub struct SiteMapAsset {
     pub mapping: Vec<(PathBuf, PathBuf)>
 }
 

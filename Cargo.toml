@@ -12,5 +12,6 @@ fern = "0.6.1"
 http = "0.2.8"
 hyper = { version = "^0.14", features = ["full"] }
 log = "0.4.17"
-serde = "1.0.152"
+serde = "^1"
+ron = "^0.8"
 tokio = { version = "1.25.0", default-features = false, features = ["net"] }

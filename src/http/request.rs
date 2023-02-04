@@ -1,6 +1,6 @@
 use bevy::{
     prelude::*,
-    tasks::{IoTaskPool, Task},
+    tasks::{IoTaskPool, Task}, app::AppExit,
 };
 use http::{Request, Response};
 use hyper::{server::conn::Http, Body};
@@ -28,16 +28,18 @@ pub(in crate::http) struct HttpRequestContext {
     listener: Option<TcpListener>,
 }
 
-pub(in crate::http) fn http_request_listener_system(mut ctx: ResMut<HttpRequestContext>, mut commands: Commands) {
+pub(in crate::http) fn http_request_listener_system(mut ctx: ResMut<HttpRequestContext>, mut commands: Commands, mut exit: EventWriter<AppExit>) {
     if let None = ctx.listener {
         match TcpListener::bind("0.0.0.0:8080") {
             Ok(l) => ctx.listener = Some(l),
             Err(e) => {
-                error!("Ran into {e} while trying to set up the listener.");
+                error!("Ran into {e} while trying to set up the listener. Cannot continue.");
+                exit.send(AppExit::default()); // Exit.
                 return;
             }
         }
-        let _ = ctx.listener.as_ref().unwrap().set_nonblocking(true).expect("FUCK");
+
+        ctx.listener.as_ref().unwrap().set_nonblocking(true).expect("Nonblocking unavailable, can't continue!");
     }
     let pool = IoTaskPool::get();
 
